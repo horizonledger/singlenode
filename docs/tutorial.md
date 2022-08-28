@@ -61,7 +61,6 @@ The message type will show where messages have to be routed to, for example a re
 
 Lets look at an example of a flow of messages between channels and the network. The message ```{"messagetype:"REQ", "command": "PING"}``` is sent from one node to another which is expected to reply with ```{"messagetype:"REP", "command": "PONG"}```. The message will go from the REQ_out channel processed by the WriteProcessor to the TCP network. On the other side the node will read on the network and put the message in the reader queue. From there the message will be parsed and forwarded to the REQ_in channel. A function called RequestReply will handle the message and determine the reply. The reply will then in the same way put in the REQ_out channel and then written on the network. 
 
-![Netio](https://imgur.com/vGNJZmi)
-[(Youtube)](https://www.youtube.com/watch?v=3HIr0imLgxM)
+![Netio](http://i.imgur.com/vGNJZmi.jpg)
 
 
