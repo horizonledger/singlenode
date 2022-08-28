@@ -1,4 +1,4 @@
-package main
+package node
 
 import (
 	"log"
@@ -23,7 +23,7 @@ func initserver() *TCPNode {
 		log.Println("error starting TCP server")
 		return testsrv
 	} else {
-		//log.Println("start ", testsrv)
+		log.Println("start ", testsrv)
 	}
 
 	// Run the server in Goroutine to stop tests from blocking
@@ -46,38 +46,37 @@ func testclient() netio.Ntchan {
 	}
 	//t.Error("...")
 	//log.Println("connected")
-	ntchan := netio.ConnNtchan(conn, "client", addr, false, make(chan string))
-	//defer conn.Close()
+	ntchan := netio.ConnNtchan(conn, "client", addr, false)
+	defer conn.Close()
 	return ntchan
 
 }
 
-// func TestServer_Run(t *testing.T) {
-// 	testsrv := initserver()
-// 	defer testsrv.Close()
+func TestServer_Run(t *testing.T) {
+	testsrv := initserver()
+	defer testsrv.Close()
 
-// 	time.Sleep(800 * time.Millisecond)
+	time.Sleep(800 * time.Millisecond)
 
-// 	// Simply check that the server is up and can accept connections
-// 	go testclient()
-// 	// for ok := true; ok; testsrv.accepting = false {
-// 	// 	log.Println(testsrv.accepting)
-// 	// 	time.Sleep(100 * time.Millisecond)
-// 	// }
+	// Simply check that the server is up and can accept connections
+	go testclient()
+	// for ok := true; ok; testsrv.accepting = false {
+	// 	log.Println(testsrv.accepting)
+	// 	time.Sleep(100 * time.Millisecond)
+	// }
 
-// 	time.Sleep(900 * time.Millisecond)
-// 	//log.Println("TestServer_Run > ", testsrv, testsrv.Peers)
+	time.Sleep(900 * time.Millisecond)
+	//log.Println("TestServer_Run > ", testsrv, testsrv.Peers)
 
-// 	if !testsrv.accepting {
-// 		t.Error("not accepting")
-// 	}
+	if !testsrv.accepting {
+		t.Error("not accepting")
+	}
 
-// 	peers := testsrv.GetPeers()
-// 	if len(peers) != 1 {
-// 		t.Error("no peers ", testsrv.Peers, len(peers))
-// 	}
+	if len(testsrv.Peers) != 1 {
+		t.Error("no peers ", testsrv.Peers, len(testsrv.Peers))
+	}
 
-// }
+}
 
 // func TestServer_Write(t *testing.T) {
 

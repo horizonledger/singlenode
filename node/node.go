@@ -1,4 +1,4 @@
-package main
+package node
 
 //node.go is the main software which validators run
 
@@ -12,9 +12,10 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"singula/node/chain"
 	"strconv"
 	"time"
+
+	"singula/node/chain"
 
 	"golang.org/x/exp/maps"
 	"singula.finance/netio"
@@ -214,10 +215,10 @@ func NewNode() (*TCPNode, error) {
 	}, nil
 }
 
-// // Close shuts down the TCP Server
-// func (t *TCPNode) Close() (err error) {
-// 	return t.server.Close()
-// }
+// Close shuts down the TCP Server
+func (t *TCPNode) Close() (err error) {
+	return t.server.Close()
+}
 
 func runNode(t *TCPNode) {
 	fmt.Printf("run node")

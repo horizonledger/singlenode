@@ -1,4 +1,4 @@
-package main
+package node
 
 // network communication layer (netio)
 
@@ -51,7 +51,7 @@ func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJS
 		dtlJson, _ := json.Marshal(dt.String())
 		r := json.RawMessage(dtlJson)
 
-		rmsg := netio.MessageJSON{MessageType: "REP", Command: "TIME", Data: &r}
+		rmsg := netio.MessageJSON{MessageType: "REP", Command: "TIME", Data: r}
 		return rmsg
 
 	case netio.CMD_BALANCE:
@@ -64,7 +64,7 @@ func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJS
 		raw := json.RawMessage(balJson)
 
 		//rmsg := MessageJSON{MessageType: "REP", Command: "BALANCE", Data: &balJson}
-		rmsg := netio.MessageJSON{MessageType: "REP", Command: "BALANCE", Data: &raw}
+		rmsg := netio.MessageJSON{MessageType: "REP", Command: "BALANCE", Data: raw}
 
 		return rmsg
 
