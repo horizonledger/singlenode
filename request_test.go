@@ -14,30 +14,25 @@ func TestProcesser(t *testing.T) {
 
 	m := netio.MessageJSON{MessageType: "REQ", Command: "PING"}
 	jm, _ := json.Marshal(m)
-	if string(jm) !=
-		"{\"messagetype\":\"REQ\",\"command\":\"PING\"}" {
-		t.Error("encoding error: ", string(jm))
-	}
 
-	go func() { ntchan.Reader_queue <- string(jm) }()
+	ntchan.Reader_queue <- string(jm)
 
 	readout := <-ntchan.REQ_in
 
-	if readout != "{\"messagetype\":\"REQ\",\"command\":\"PING\"}" {
+	if readout != string(jm) {
 		t.Error("process error ", readout)
 	}
 
-	go func() { ntchan.Reader_queue <- string(jm) }()
+	ntchan.Reader_queue <- string(jm)
 
 	readout2 := <-ntchan.REQ_in
 
-	if readout2 == "{\"messagetype\":\"REQ\",\"command\":\"PING\"}" {
-		//ntchan.REP_out <- "REP PONG"
-	}
-
 	reply := RequestReply(ntchan, readout2)
 
-	if reply != "{\"messagetype\":\"REP\",\"command\":\"PONG\"}" {
+	m = netio.MessageJSON{MessageType: "REP", Command: "PONG"}
+	jm, _ = json.Marshal(m)
+
+	if reply != string(jm) {
 		t.Error("process reply error ", reply)
 	}
 
