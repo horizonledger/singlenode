@@ -1,0 +1,6 @@
+{
+    "verbose": true,
+    "nodeport": 8888,
+    "NodeAlias": "alpha",
+    "CreateGenesis": true
+}
