@@ -2,168 +2,169 @@ package main
 
 //mock node, no TCP network but just channels
 
-import (
-	"fmt"
-	"log"
-	"net"
-	"os"
-	"os/signal"
-	"strconv"
+// import (
+// 	"fmt"
+// 	"log"
+// 	"net"
+// 	"os"
+// 	"os/signal"
+// 	"strconv"
 
-	"singula/node/chain"
+// 	"singula/node/chain"
+// 	"singula/node/node"
 
-	"singula.finance/netio"
-)
+// 	"singula.finance/netio"
+// )
 
-func NewNodeMock() (*TCPNode, error) {
-	return &TCPNode{
-		//addr:          addr,
-		accepting:     false,
-		ConnectedChan: make(chan net.Conn),
-		Loglevel:      LOGLEVEL_ON,
-	}, nil
-}
+// func NewNodeMock() (*node.TCPNode, error) {
+// 	return &node.TCPNode{
+// 		//addr:          addr,
+// 		accepting:     false,
+// 		ConnectedChan: make(chan net.Conn),
+// 		Loglevel:      LOGLEVEL_ON,
+// 	}, nil
+// }
 
-func (t *TCPNode) handleConnectionMock(mgr *chain.ChainManager, ntchan netio.Ntchan) {
-	//tr := 100 * time.Millisecond
-	//defer ntchan.Conn.Close()
-	//t.log(fmt.Sprintf("handleConnection"))
+// func (t *TCPNode) handleConnectionMock(mgr *chain.ChainManager, ntchan netio.Ntchan) {
+// 	//tr := 100 * time.Millisecond
+// 	//defer ntchan.Conn.Close()
+// 	//t.log(fmt.Sprintf("handleConnection"))
 
-	//netio.NetConnectorSetup(ntchan)
-	netio.MockNetConnectorSetupEcho(ntchan)
+// 	//netio.NetConnectorSetup(ntchan)
+// 	netio.MockNetConnectorSetupEcho(ntchan)
 
-	//go RequestHandlerTelMock(t, ntchan)
+// 	//go RequestHandlerTelMock(t, ntchan)
 
-	//go netio.WriteLoop(ntchan, 100*time.Millisecond)
+// 	//go netio.WriteLoop(ntchan, 100*time.Millisecond)
 
-}
+// }
 
-//handle requests in telnet style i.e. string encoding
-// func RequestHandlerTelMock(t *TCPNode, ntchan netio.Ntchan) {
+// //handle requests in telnet style i.e. string encoding
+// // func RequestHandlerTelMock(t *TCPNode, ntchan netio.Ntchan) {
+// // 	for {
+// // 		msg_string := <-ntchan.REQ_in
+// // 		t.log(fmt.Sprintf("handle %s ", msg_string))
+
+// // 		reply_msg := "out"
+// // 		ntchan.REP_out <- reply_msg
+// // 	}
+// // }
+
+// //handle new connection
+// func (t *TCPNode) HandleConnectTCPMock() {
+
+// 	//TODO! hearbeart, check if peers are alive
+// 	//TODO! handshake
+
 // 	for {
-// 		msg_string := <-ntchan.REQ_in
-// 		t.log(fmt.Sprintf("handle %s ", msg_string))
+// 		newpeerConn := <-t.ConnectedChan
+// 		strRemoteAddr := newpeerConn.RemoteAddr().String()
+// 		//t.log(fmt.Sprintf("accepted conn %v %v", strRemoteAddr, t.accepting))
+// 		//t.log(fmt.Sprintf("new peer %v ", newpeerConn))
+// 		// log.Println("> ", t.Peers)
+// 		// log.Println("# peers ", len(t.Peers))
+// 		Verbose := true
+// 		ntchan := netio.ConnNtchan(newpeerConn, "server", strRemoteAddr, Verbose)
 
-// 		reply_msg := "out"
-// 		ntchan.REP_out <- reply_msg
+// 		p := netio.Peer{Address: strRemoteAddr, NodePort: t.NodePort, NTchan: ntchan}
+// 		t.Peers = append(t.Peers, p)
+
+// 		//go t.handleConnection(t.Mgr, ntchan)
+// 		go t.handleConnectionMock(t.Mgr, ntchan)
+
+// 		//conn.Close()
+
 // 	}
 // }
 
-//handle new connection
-func (t *TCPNode) HandleConnectTCPMock() {
+// func runNodeMock(t *TCPNode) {
 
-	//TODO! hearbeart, check if peers are alive
-	//TODO! handshake
+// 	//setupLogfile()
+// 	log.Println("run node")
+// 	//t.log(fmt.Sprintf("run node"))
 
-	for {
-		newpeerConn := <-t.ConnectedChan
-		strRemoteAddr := newpeerConn.RemoteAddr().String()
-		//t.log(fmt.Sprintf("accepted conn %v %v", strRemoteAddr, t.accepting))
-		//t.log(fmt.Sprintf("new peer %v ", newpeerConn))
-		// log.Println("> ", t.Peers)
-		// log.Println("# peers ", len(t.Peers))
-		Verbose := true
-		ntchan := netio.ConnNtchan(newpeerConn, "server", strRemoteAddr, Verbose)
+// 	//t.log(fmt.Sprintf("run node on port: %d", t.Config.NodePort))
 
-		p := netio.Peer{Address: strRemoteAddr, NodePort: t.NodePort, NTchan: ntchan}
-		t.Peers = append(t.Peers, p)
+// 	// 	//if file exists read the chain
 
-		//go t.handleConnection(t.Mgr, ntchan)
-		go t.handleConnectionMock(t.Mgr, ntchan)
+// 	// create block every blocktime sec
 
-		//conn.Close()
+// 	// if t.Config.DelgateEnabled {
+// 	// 	//go utils.DoEvery(, chain.MakeBlock(mgr, blockTime))
 
-	}
-}
+// 	// 	//TODO!
+// 	// 	//go chain.MakeBlockLoop(t.Mgr, blocktime)
+// 	// }
 
-func runNodeMock(t *TCPNode) {
+// 	go t.HandleConnectTCP()
 
-	//setupLogfile()
-	log.Println("run node")
-	//t.log(fmt.Sprintf("run node"))
+// 	t.RunTCP()
+// }
 
-	//t.log(fmt.Sprintf("run node on port: %d", t.Config.NodePort))
+// func runAllMock(config Config) {
 
-	// 	//if file exists read the chain
+// 	log.Println("runNodeAll with config ", config)
 
-	// create block every blocktime sec
+// 	node, err := NewNode()
+// 	node.Config = config
+// 	node.addr = ":" + strconv.Itoa(node.Config.NodePort)
+// 	//node.setupLogfile()
 
-	// if t.Config.DelgateEnabled {
-	// 	//go utils.DoEvery(, chain.MakeBlock(mgr, blockTime))
+// 	//node.log(fmt.Sprintf("PeerAddresses: %v", node.Config.PeerAddresses))
 
-	// 	//TODO!
-	// 	//go chain.MakeBlockLoop(t.Mgr, blocktime)
-	// }
+// 	mgr := chain.CreateManager()
+// 	node.Mgr = &mgr
 
-	go t.HandleConnectTCP()
+// 	//TODO signatures of genesis
+// 	node.Mgr.InitAccounts()
 
-	t.RunTCP()
-}
+// 	//node.initSyncChain(config)
 
-func runAllMock(config Config) {
+// 	if err != nil {
+// 		//node.log(fmt.Sprintf("error creating TCP server"))
+// 		return
+// 	}
 
-	log.Println("runNodeAll with config ", config)
+// 	log.Println("run node")
+// 	go runNode(node)
 
-	node, err := NewNode()
-	node.Config = config
-	node.addr = ":" + strconv.Itoa(node.Config.NodePort)
-	//node.setupLogfile()
+// }
 
-	//node.log(fmt.Sprintf("PeerAddresses: %v", node.Config.PeerAddresses))
+// func runNodeWithConfigMock() {
 
-	mgr := chain.CreateManager()
-	node.Mgr = &mgr
+// 	// conffile := "conf.edn"
+// 	// log.Println("config file ", conffile)
 
-	//TODO signatures of genesis
-	node.Mgr.InitAccounts()
+// 	// if _, err := os.Stat(conffile); os.IsNotExist(err) {
+// 	// 	log.Println("config file does not exist. create a file named ", conffile)
+// 	// 	return
+// 	// }
 
-	//node.initSyncChain(config)
+// 	//config := LoadConfiguration(conffile)
+// 	config := getConfig()
+// 	log.Println("config ", config)
+// 	//log.Println("DelegateName ", config.DelegateName)
+// 	//log.Println("CreateGenesis ", config.CreateGenesis)
+// 	node, _ := NewNode()
+// 	node.Config = *config
 
-	if err != nil {
-		//node.log(fmt.Sprintf("error creating TCP server"))
-		return
-	}
+// 	quit := make(chan os.Signal)
+// 	signal.Notify(quit, os.Interrupt)
 
-	log.Println("run node")
-	go runNode(node)
+// 	go runNode(node) //runAll(config)
 
-}
+// 	<-quit
+// 	// log.Println("Got quit signal: shutdown node ...")
+// 	// signal.Reset(os.Interrupt)
 
-func runNodeWithConfigMock() {
+// 	log.Println("node exiting")
 
-	// conffile := "conf.edn"
-	// log.Println("config file ", conffile)
+// 	//handle shutdown should never happen, need restart on OS level and error handling
 
-	// if _, err := os.Stat(conffile); os.IsNotExist(err) {
-	// 	log.Println("config file does not exist. create a file named ", conffile)
-	// 	return
-	// }
+// }
 
-	//config := LoadConfiguration(conffile)
-	config := getConfig()
-	log.Println("config ", config)
-	//log.Println("DelegateName ", config.DelegateName)
-	//log.Println("CreateGenesis ", config.CreateGenesis)
-	node, _ := NewNode()
-	node.Config = *config
+// func main() {
 
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt)
-
-	go runNode(node) //runAll(config)
-
-	<-quit
-	// log.Println("Got quit signal: shutdown node ...")
-	// signal.Reset(os.Interrupt)
-
-	log.Println("node exiting")
-
-	//handle shutdown should never happen, need restart on OS level and error handling
-
-}
-
-func main() {
-
-	//runNodeWithConfigMock()
-	fmt.Println("run mock")
-}
+// 	//runNodeWithConfigMock()
+// 	fmt.Println("run mock")
+// }

@@ -1,4 +1,4 @@
-package node
+package p2p
 
 // network communication layer (netio)
 

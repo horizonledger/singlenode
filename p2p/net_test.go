@@ -1,4 +1,4 @@
-package node
+package p2p
 
 import (
 	"log"
@@ -47,6 +47,7 @@ func testclient() netio.Ntchan {
 	//t.Error("...")
 	//log.Println("connected")
 	ntchan := netio.ConnNtchan(conn, "client", addr, false)
+	netio.NetConnectorSetupEcho(ntchan)
 	defer conn.Close()
 	return ntchan
 
@@ -59,13 +60,17 @@ func TestServer_Run(t *testing.T) {
 	time.Sleep(800 * time.Millisecond)
 
 	// Simply check that the server is up and can accept connections
-	go testclient()
+	ntclient := testclient()
+
+	if ntclient.SrcName != "client" {
+		t.Error("name")
+	}
 	// for ok := true; ok; testsrv.accepting = false {
 	// 	log.Println(testsrv.accepting)
 	// 	time.Sleep(100 * time.Millisecond)
 	// }
 
-	time.Sleep(900 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	//log.Println("TestServer_Run > ", testsrv, testsrv.Peers)
 
 	if !testsrv.accepting {
@@ -75,6 +80,44 @@ func TestServer_Run(t *testing.T) {
 	if len(testsrv.Peers) != 1 {
 		t.Error("no peers ", testsrv.Peers, len(testsrv.Peers))
 	}
+
+	ntclient2 := testclient()
+
+	time.Sleep(1000 * time.Millisecond)
+
+	if len(testsrv.Peers) != 2 {
+		t.Error("no peers ", testsrv.Peers, len(testsrv.Peers))
+	}
+
+	if ntclient2.Alias == "xx" {
+		t.Error("client nil")
+	}
+	// if ntclient2.Alias != "client" {
+	// 	t.Error("name ", ntclient2.Alias)
+	// }
+
+	ntclient.Writer_queue <- "test"
+
+	//ntclient.quitchan <- true
+
+	//TODO close time limit
+	//https://stackoverflow.com/questions/49872097/idiomatic-way-for-reading-from-the-channel-for-a-certain-time
+	// outread := <-testsrv.Peers[0].NTchan.Reader_queue
+
+	// time.Sleep(1000 * time.Millisecond)
+
+	// //ntclient2.Writer_queue <- "test"
+
+	// testsrv.Close()
+
+	// //outread := testsrv.peers.Reader_queue
+	// // outread := <-testsrv.Peers[0].NTchan.Reader_queue
+
+	// if outread != "test" {
+	// 	t.Error("not read")
+	// }
+
+	// testsrv.Close()
 
 }
 

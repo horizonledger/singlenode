@@ -1,4 +1,4 @@
-package node
+package p2p
 
 //node.go is the main software which validators run
 
@@ -217,6 +217,7 @@ func NewNode() (*TCPNode, error) {
 
 // Close shuts down the TCP Server
 func (t *TCPNode) Close() (err error) {
+	fmt.Println("close node")
 	return t.server.Close()
 }
 
@@ -225,6 +226,8 @@ func runNode(t *TCPNode) {
 
 	go t.HandleConnectTCP()
 	go t.RunTCP()
+
+	//TODO single node mode or peer mode
 
 	// 	if err != nil {
 	// 		node.log(fmt.Sprintf("error creating TCP server"))
@@ -349,19 +352,5 @@ func runNodeWithConfig() {
 	// 	// signal.Reset(os.Interrupt)
 
 	// 	//handle shutdown should never happen, need restart on OS level and error handling
-
-}
-
-func main() {
-
-	m2 := netio.ConstructMsgSimple("REQ", "TIME")
-	log.Println(m2)
-
-	runNodeWithConfig()
-
-	//GitCommit := os.Getenv("GIT_COMMIT")
-	//fmt.Printf("--- run horizon ---\ngit commit: %s ----\n", GitCommit)
-
-	//runNodeWithConfig()
 
 }
