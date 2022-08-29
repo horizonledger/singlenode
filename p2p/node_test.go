@@ -35,47 +35,6 @@ func TestBasicCommand(t *testing.T) {
 
 }
 
-// func TestPing(t *testing.T) {
-// 	req_msg := netio.Message{MessageType: netio.REQ, Command: netio.CMD_PING}
-// 	//jsonmsgtype, _ := netio.NewJSONMessage(req_msg)
-
-// 	if req_msg.MessageType != "REQ" || req_msg.Command != "PING" {
-// 		t.Error("req ", req_msg)
-// 	}
-// 	reply := HandlePing(req_msg)
-// 	if reply.MessageType != "REP" || reply.Command != "PONG" {
-// 		t.Error("reply type ", reply)
-// 	}
-// }
-
-func TestAccountmsg(t *testing.T) {
-
-	// node, _ := NewNode()
-	// //defer node.Close()
-	// node.addr = ":" + strconv.Itoa(8080)
-	// //node.Loglevel = LOGLEVEL_OFF
-	// mgr := chain.CreateManager()
-	// mgr.InitAccounts()
-	// node.Mgr = &mgr
-
-	// req_msg := netio.MessageJSON{MessageType: netio.REQ, Command: netio.CMD_ACCOUNTS}
-
-	// ntchan := netio.ConnNtchanStub("", "")
-
-	// //p := netio.Peer{NTchan: ntchan}
-
-	// //reply_msg := RequestReply(node, &p, req_msg)
-	// jm, _ := json.Marshal(req_msg)
-	// reply_msg := RequestReply(ntchan, string(jm))
-
-	// if reply_msg != `{"messagetype":"REP","command":"ACCOUNTS","data":{"P2e2bfb58c9db":400}}` {
-	// 	t.Error(reply_msg)
-	// } else {
-	// 	fmt.Println(reply_msg)
-	// }
-
-}
-
 func TestBalance(t *testing.T) {
 
 	// node, _ := NewNode()
@@ -86,8 +45,6 @@ func TestBalance(t *testing.T) {
 	// mgr.InitAccounts()
 	// node.Mgr = &mgr
 
-	// //req_msg := netio.EdnConstructMsgMapData(netio.REQ, netio.CMD_BALANCE, "abc")
-	// //fmt.Println(req_msg)
 	// balJson, _ := json.Marshal("abc")
 	// msg := netio.MessageJSON{MessageType: netio.REQ, Command: netio.CMD_BALANCE, Data: []byte(balJson)}
 
@@ -146,6 +103,47 @@ func TestBalance(t *testing.T) {
 	// b := block.Block{}
 	// tx := tx.Tx{}
 	// mgr.ApplyBlock(b)
+}
+
+// func TestPing(t *testing.T) {
+// 	req_msg := netio.Message{MessageType: netio.REQ, Command: netio.CMD_PING}
+// 	//jsonmsgtype, _ := netio.NewJSONMessage(req_msg)
+
+// 	if req_msg.MessageType != "REQ" || req_msg.Command != "PING" {
+// 		t.Error("req ", req_msg)
+// 	}
+// 	reply := HandlePing(req_msg)
+// 	if reply.MessageType != "REP" || reply.Command != "PONG" {
+// 		t.Error("reply type ", reply)
+// 	}
+// }
+
+func TestAccountmsg(t *testing.T) {
+
+	// node, _ := NewNode()
+	// //defer node.Close()
+	// node.addr = ":" + strconv.Itoa(8080)
+	// //node.Loglevel = LOGLEVEL_OFF
+	// mgr := chain.CreateManager()
+	// mgr.InitAccounts()
+	// node.Mgr = &mgr
+
+	// req_msg := netio.MessageJSON{MessageType: netio.REQ, Command: netio.CMD_ACCOUNTS}
+
+	// ntchan := netio.ConnNtchanStub("", "")
+
+	// //p := netio.Peer{NTchan: ntchan}
+
+	// //reply_msg := RequestReply(node, &p, req_msg)
+	// jm, _ := json.Marshal(req_msg)
+	// reply_msg := RequestReply(ntchan, string(jm))
+
+	// if reply_msg != `{"messagetype":"REP","command":"ACCOUNTS","data":{"P2e2bfb58c9db":400}}` {
+	// 	t.Error(reply_msg)
+	// } else {
+	// 	fmt.Println(reply_msg)
+	// }
+
 }
 
 func TestFaucetTx(t *testing.T) {
