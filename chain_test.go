@@ -2,11 +2,11 @@ package main
 
 import (
 	"math/rand"
+	"singula/node/block"
+	"singula/node/chain"
 	"testing"
 
-	"github.com/polygonledger/node/block"
-	chain "github.com/polygonledger/node/chain"
-	"github.com/polygonledger/node/crypto"
+	"singula.finance/netio/crypto"
 )
 
 //basic chain functions

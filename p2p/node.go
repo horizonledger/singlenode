@@ -56,7 +56,7 @@ type TCPNode struct {
 }
 
 // "DelegateName": "localhost",
-// "PeerAddresses": ["polygonnode.com", "polygon.cc", "swix.io"],
+
 // DelgateEnabled true
 // CreateGenesis true
 // Verbose true

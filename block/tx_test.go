@@ -1,8 +1,14 @@
 package block
 
 import (
+	"encoding/hex"
 	"encoding/json"
+
+	//"singula/node/chain"
+
 	"testing"
+
+	"singula.finance/netio/crypto"
 )
 
 // import (
@@ -49,28 +55,63 @@ func TestTxJson(t *testing.T) {
 	}
 }
 
+func TestSignTx(t *testing.T) {
+	//sign
+	keypair := crypto.PairFromSecret("test")
+	var tx Tx
+	//s := block.AccountFromString("Pa033f6528cc1")
+	s := "Pa033f6528cc1"
+	r := s //TODO
+	tx = Tx{Nonce: 0, Amount: 0, Sender: s, Receiver: r}
+
+	signature := SignTx(tx, keypair.PrivKey)
+	sighex := hex.EncodeToString(signature.Serialize())
+
+	if sighex == "" {
+		t.Error("hex empty")
+	}
+	tx.Signature = sighex
+	tx.SenderPubkey = crypto.PubKeyToHex(keypair.PubKey)
+
+	//verify
+	verified := VerifyTxSig(tx)
+
+	if !verified {
+		t.Error("verify tx fail")
+	}
+
+}
+
 func TestSignTxBasic(t *testing.T) {
 
-	// keypair := crypto.PairFromSecret("test")
-	// pub := crypto.PubKeyToHex(keypair.PubKey)
-	// //account := Account{AccountKey: crypto.Address(pub)}
+	keypair := crypto.PairFromSecret("test")
+	pub := crypto.PubKeyToHex(keypair.PubKey)
+	//account := Account{AccountKey: crypto.Address(pub)}
 
-	// randNonce := 0
-	// amount := 10
+	randNonce := 0
+	amount := 10
 
-	// genkeypair := chain.GenesisKeys()
+	addr := crypto.Address(crypto.PubKeyToHex(keypair.PubKey))
+
+	//crypto.RandomPublicKey()
+
+	//genkeypair := GenesisKeys()
 	// addr := crypto.Address(crypto.PubKeyToHex(genkeypair.PubKey))
 	// //Genesis_Account := AccountFromString(addr)
 
-	// //{"Nonce":0,"Amount":0,"Sender":{"AccountKey":"Pa033f6528cc1"},"Receiver":{"AccountKey":"Pa033f6528cc1"},"SenderPubkey":"","Signature":"","id":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+	// // //{"Nonce":0,"Amount":0,"Sender":{"AccountKey":"Pa033f6528cc1"},"Receiver":{"AccountKey":"Pa033f6528cc1"},"SenderPubkey":"","Signature":"","id":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
 	// r := crypto.Address(pub)
-	// tx := Tx{Nonce: randNonce, Amount: amount, Sender: addr, Receiver: r, SenderPubkey: "", Signature: ""}
+	tx := Tx{Nonce: randNonce, Amount: amount, Sender: addr, Receiver: addr, SenderPubkey: pub, Signature: ""}
 
-	// tx = crypto.SignTxAdd(tx, keypair)
+	if tx.Amount != 10 {
+		t.Error("wrong amount")
+	}
+
+	//tx = crypto.SignTxAdd(tx, keypair)
 
 	// //log.Println(tx)
 
-	// verified := crypto.VerifyTxSig(tx)
+	//verified := crypto.VerifyTxSig(tx)
 
 	// if !verified {
 	// 	t.Error("verify tx fail")

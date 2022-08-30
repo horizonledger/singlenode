@@ -1,5 +1,17 @@
 package block
 
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
+
+	"singula.finance/netio/crypto"
+)
+
+//"singula/node/block"
+
 //potential TransactionTypes
 // VOTE_DELEGATE
 // REGISTER_NAME
@@ -75,3 +87,63 @@ type TxEdn struct {
 	//confirmations
 	//height
 }
+
+func SignTx(tx Tx, privkey btcec.PrivateKey) btcec.Signature {
+	//TODO sign tx not just id
+	txJson, _ := json.Marshal(tx)
+	//log.Println(string(txJson))
+	//message := fmt.Sprintf("%d", tx.Id)
+
+	messageHash := chainhash.DoubleHashB([]byte(txJson))
+	signature, err := privkey.Sign(messageHash)
+	if err != nil {
+		fmt.Println("err ", err)
+		//return
+	}
+	return *signature
+
+}
+
+func RemoveSigTx(tx Tx) Tx {
+	tx.Signature = ""
+	return tx
+}
+
+func RemovePubTx(tx Tx) Tx {
+	tx.SenderPubkey = ""
+	return tx
+}
+
+func VerifyTxSig(tx Tx) bool {
+	pubkey := crypto.PubKeyFromHex(tx.SenderPubkey)
+	sighex := tx.Signature
+	sign := crypto.SignatureFromHex(sighex)
+	//need to remove sig and pubkey for validation
+	tx = RemoveSigTx(tx)
+	tx = RemovePubTx(tx)
+
+	txJson, _ := json.Marshal(tx)
+	//log.Println("verify sig for tx ", string(txJson))
+	verified := crypto.VerifyMessageSignPub(sign, pubkey, string(txJson))
+	return verified
+
+}
+
+// // //hash of a transaction, currently sha256 of the nonce
+// // //TODO hash properly
+// // func TxHash(tx block.Tx) [32]byte {
+// // 	b := []byte(string(tx.Nonce)[:])
+// // 	hash := sha256.Sum256(b)
+// // 	return hash
+// // }
+
+// // //sign tx and add signature and pubkey
+// func SignTxAdd(tx block.Tx, keypair Keypair) block.Tx {
+
+// 	signature := SignTx(tx, keypair.PrivKey)
+// 	sighex := hex.EncodeToString(signature.Serialize())
+
+// 	tx.Signature = sighex
+// 	tx.SenderPubkey = PubKeyToHex(keypair.PubKey)
+// 	return tx
+// }
