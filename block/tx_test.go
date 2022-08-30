@@ -3,6 +3,8 @@ package block
 import (
 	"encoding/hex"
 	"encoding/json"
+	"io/ioutil"
+	"os"
 
 	//"singula/node/chain"
 
@@ -118,59 +120,59 @@ func TestSignTxBasic(t *testing.T) {
 	// }
 }
 
-// func TestTxFile(t *testing.T) {
-// 	//write tx.json
+func TestTxFile(t *testing.T) {
+	//write tx.json
 
-// 	keypair := crypto.PairFromSecret("test")
+	keypair := crypto.PairFromSecret("test")
 
-// 	pubk := crypto.PubKeyToHex(keypair.PubKey)
-// 	addr := crypto.Address(pubk)
+	pubk := crypto.PubKeyToHex(keypair.PubKey)
+	addr := crypto.Address(pubk)
 
-// 	if addr != "Pa033f6528cc1" {
-// 		t.Error("address wrong ", addr)
-// 	}
+	if addr != "Pa033f6528cc1" {
+		t.Error("address wrong ", addr)
+	}
 
-// 	keypair_recv := crypto.PairFromSecret("receive")
-// 	addr_recv := crypto.Address(crypto.PubKeyToHex(keypair_recv.PubKey))
+	keypair_recv := crypto.PairFromSecret("receive")
+	addr_recv := crypto.Address(crypto.PubKeyToHex(keypair_recv.PubKey))
 
-// 	tx := Tx{Nonce: 1, Amount: 10, Sender: addr, Receiver: addr_recv}
-// 	signature := crypto.SignTx(tx, keypair.PrivKey)
-// 	sighex := hex.EncodeToString(signature.Serialize())
+	tx := Tx{Nonce: 1, Amount: 10, Sender: addr, Receiver: addr_recv}
+	signature := SignTx(tx, keypair.PrivKey)
+	sighex := hex.EncodeToString(signature.Serialize())
 
-// 	tx.Signature = sighex
-// 	tx.SenderPubkey = crypto.PubKeyToHex(keypair.PubKey)
+	tx.Signature = sighex
+	tx.SenderPubkey = crypto.PubKeyToHex(keypair.PubKey)
 
-// 	if !(tx.Amount == 10) {
-// 		t.Error("amount wrong ")
-// 	}
+	if !(tx.Amount == 10) {
+		t.Error("amount wrong ")
+	}
 
-// 	txJson, _ := json.Marshal(tx)
+	txJson, _ := json.Marshal(tx)
 
-// 	ioutil.WriteFile("tx_test.json", []byte(txJson), 0644)
+	ioutil.WriteFile("tx_test.json", []byte(txJson), 0644)
 
-// 	dat, _ := ioutil.ReadFile("tx_test.json")
+	dat, _ := ioutil.ReadFile("tx_test.json")
 
-// 	os.Remove("tx_test.json")
+	os.Remove("tx_test.json")
 
-// 	var rtx Tx
+	var rtx Tx
 
-// 	if err := json.Unmarshal(dat, &rtx); err != nil {
-// 		panic(err)
-// 	}
+	if err := json.Unmarshal(dat, &rtx); err != nil {
+		panic(err)
+	}
 
-// 	//log.Println(rtx.SenderPubkey)
+	//log.Println(rtx.SenderPubkey)
 
-// 	if !(rtx.Amount == 10) {
-// 		t.Error("amount wrong ")
-// 	}
+	if !(rtx.Amount == 10) {
+		t.Error("amount wrong ")
+	}
 
-// 	verified := crypto.VerifyTxSig(tx)
+	verified := VerifyTxSig(tx)
 
-// 	if !verified {
-// 		t.Error("verify tx fail")
-// 	}
+	if !verified {
+		t.Error("verify tx fail")
+	}
 
-// }
+}
 
 // func TestTxSign(t *testing.T) {
 // 	kp := crypto.PairFromSecret("test")

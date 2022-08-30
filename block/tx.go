@@ -58,35 +58,35 @@ type Tx struct {
 // 	//Nonce        int    `edn:"Nonce"`
 // }
 
-type TxSigmapEdn struct {
-	SenderPubkey string `edn:"senderPubkey"`
-	Signature    string `edn:"signature"`
-}
-
-// type TxExpr struct {
-// 	TxType   string   `edn:"TxType"`
-// 	Transfer SimpleTx `edn:"TxTransfer"`
-// 	Sigmap   TxSigmap `edn:"Sigmap"`
+// type TxSigmapEdn struct {
+// 	SenderPubkey string `edn:"senderPubkey"`
+// 	Signature    string `edn:"signature"`
 // }
 
-type TxEdn struct {
-	TxType   string `edn:"TxType"`
-	Amount   int    `edn:"Amount"`
-	Sender   string `edn:"Sender"`   //[32]byte
-	Receiver string `end:"Receiver"` //[32]byte
-	//TODO delete
-	SenderPubkey string `edn:"SenderPubkey"` //hex string
-	Signature    string `edn:"Signature"`    //hex string
-	Nonce        int    `edn:"Nonce"`
-	//Id           [32]byte `edn:"id"`           //gets assigned when verified in a block
+// // type TxExpr struct {
+// // 	TxType   string   `edn:"TxType"`
+// // 	Transfer SimpleTx `edn:"TxTransfer"`
+// // 	Sigmap   TxSigmap `edn:"Sigmap"`
+// // }
 
-	//fee
-	//txtype
-	//timestamp
+// type TxEdn struct {
+// 	TxType   string `edn:"TxType"`
+// 	Amount   int    `edn:"Amount"`
+// 	Sender   string `edn:"Sender"`   //[32]byte
+// 	Receiver string `end:"Receiver"` //[32]byte
+// 	//TODO delete
+// 	SenderPubkey string `edn:"SenderPubkey"` //hex string
+// 	Signature    string `edn:"Signature"`    //hex string
+// 	Nonce        int    `edn:"Nonce"`
+// 	//Id           [32]byte `edn:"id"`           //gets assigned when verified in a block
 
-	//confirmations
-	//height
-}
+// 	//fee
+// 	//txtype
+// 	//timestamp
+
+// 	//confirmations
+// 	//height
+// }
 
 func SignTx(tx Tx, privkey btcec.PrivateKey) btcec.Signature {
 	//TODO sign tx not just id
