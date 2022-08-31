@@ -35,10 +35,10 @@ const (
 )
 
 func vlog(msg string) {
-	//log.Println(string)
+	//log.Println(msg)
 }
 
-//TODO
+// TODO
 func GenesisKeys() crypto.Keypair {
 	keypair := crypto.PairFromSecret("genesis")
 	return keypair
@@ -59,7 +59,7 @@ func (mgr *ChainManager) IsTreasury(account block.Account) bool {
 	return account.AccountKey == Treasury_Address
 }
 
-//init genesis account
+// init genesis account
 func (mgr *ChainManager) InitAccounts() {
 	mgr.State.Accounts = make(map[string]int)
 
@@ -72,12 +72,12 @@ func (mgr *ChainManager) InitAccounts() {
 	vlog(fmt.Sprintf("mgr.Accounts %v", mgr.State.Accounts))
 }
 
-//valid cash transaction
-//instead of needing to evluate bytecode like Bitcoin or Ethereum this is hardcoded cash transaction, no multisig, no timelocks
-//* sufficient balance of sender (the sender has the cash, no credit as of now)
-//* the sender is who he says he is (authorized access to funds)
-//speed of evaluation should be way less than 1 msec
-//TODO check nonce
+// valid cash transaction
+// instead of needing to evluate bytecode like Bitcoin or Ethereum this is hardcoded cash transaction, no multisig, no timelocks
+// * sufficient balance of sender (the sender has the cash, no credit as of now)
+// * the sender is who he says he is (authorized access to funds)
+// speed of evaluation should be way less than 1 msec
+// TODO check nonce
 func TxValid(mgr *ChainManager, tx block.Tx) bool {
 
 	//TODO check receiver has valid address format
@@ -86,7 +86,7 @@ func TxValid(mgr *ChainManager, tx block.Tx) bool {
 	if !sufficientBalance {
 		vlog("insufficientBalance")
 	} else {
-		vlog("suffcientBalance")
+		vlog("sufficientBalance")
 	}
 	// vlog("sufficientBalance ", sufficientBalance, tx.Sender, Accounts[tx.Sender], tx.Amount)
 	//TODO and signature
@@ -99,7 +99,7 @@ func TxValid(mgr *ChainManager, tx block.Tx) bool {
 	// vlog(fmt.Sprintf("sigvalid %v", verified))
 	// //TODO check sig
 	// return bTxValid
-	return false
+	return sufficientBalance
 }
 
 func HandleTx(mgr *ChainManager, tx block.Tx) netio.Message {
@@ -132,7 +132,7 @@ func HandleTx(mgr *ChainManager, tx block.Tx) netio.Message {
 
 }
 
-//empty the tx pool
+// empty the tx pool
 func EmptyPool(mgr *ChainManager) {
 	mgr.Tx_pool = []block.Tx{}
 }
@@ -148,7 +148,7 @@ func blockHash(block block.Block) block.Block {
 	return block
 }
 
-//move cash in the chain, we should know tx is checked to be valid by now
+// move cash in the chain, we should know tx is checked to be valid by now
 func (mgr *ChainManager) moveCash(SenderAccount string, ReceiverAccount string, amount int) {
 	//vlog(fmt.Srpintf("move cash %v %v %v %v %d", SenderAccount, ReceiverAccount, mgr.State.Accounts[SenderAccount], mgr.State.Accounts[ReceiverAccount], amount))
 
@@ -230,17 +230,17 @@ func MakeGenesisBlock() block.Block {
 	return genesis_block
 }
 
-//append block to chain of blocks
+// append block to chain of blocks
 func (mgr *ChainManager) AppendBlock(new_block block.Block) {
 	mgr.Blocks = append(mgr.Blocks, new_block)
 }
 
-//reset blocks to 0
+// reset blocks to 0
 func (mgr *ChainManager) ResetBlocks() {
 	mgr.Blocks = make([]block.Block, 0)
 }
 
-//apply block to the state
+// apply block to the state
 func (mgr *ChainManager) ApplyBlock(block block.Block) {
 	vlog(fmt.Sprintf("ApplyBlock %v", block))
 	//apply
@@ -259,13 +259,13 @@ func (mgr *ChainManager) ApplyBlocks(blocks []block.Block) {
 	}
 }
 
-//trivial json storage
+// trivial json storage
 func (mgr *ChainManager) WriteChain() {
 	dataJson, _ := json.Marshal(mgr.Blocks)
 	ioutil.WriteFile(ChainStorageFile, []byte(dataJson), 0644)
 }
 
-//TODO error
+// TODO error
 func (mgr *ChainManager) ReadChain() bool {
 
 	if _, err := os.Stat(ChainStorageFile); os.IsNotExist(err) {

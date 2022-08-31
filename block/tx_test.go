@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	//"singula/node/chain"
-
 	"testing"
 
 	"singula.finance/netio/crypto"
@@ -24,7 +22,7 @@ import (
 // 	"singula.finance/netio"
 // )
 
-//basic block functions
+// basic block functions
 func TestBasicAssign(t *testing.T) {
 	var tx Tx
 	tx = Tx{Nonce: 1}
@@ -173,6 +171,45 @@ func TestTxFile(t *testing.T) {
 	}
 
 }
+
+/* func TestTx(t *testing.T) {
+	//initialize blockchain
+	mgr := chain.CreateManager()
+	mgr.InitAccounts()
+	genBlock := chain.MakeGenesisBlock()
+	mgr.ApplyBlock(genBlock)
+	mgr.AppendBlock(genBlock)
+	chain.EmptyPool(&mgr)
+	mgr.WriteChain()
+	//create addresses
+	keypair_sender := crypto.PairFromSecret("sender")
+	pubkey_sender := crypto.PubKeyToHex(keypair_sender.PubKey)
+	addr_sender := crypto.Address(pubkey_sender)
+	mgr.SetAccount(addr_sender, 100)
+	keypair_receiver := crypto.PairFromSecret("receiver")
+	addr_receiver := crypto.Address(crypto.PubKeyToHex(keypair_receiver.PubKey))
+	mgr.SetAccount(addr_sender, 0)
+	//[ ] create tx
+	tx := Tx{Nonce: 1, Amount: 10, Sender: addr_sender, Receiver: addr_receiver, SenderPubkey: pubkey_sender}
+	//[ ] sign tx
+	signature := SignTx(tx, keypair_sender.PrivKey)
+	tx.Signature = hex.EncodeToString(signature.Serialize())
+	//[ ] validate tx
+	chain.HandleTx(&mgr, tx) //verify tx validity, add tx to Tx_pool and broadcast tx
+	chain.MakeBlock(&mgr)    //create a block with tx (Apply tx, Append Block, empty Tx_pool)
+	//[ ] after tx is confirmed, balance should have changed
+	if !(mgr.State.Accounts[tx.Sender] == 90) {
+		t.Error("sender wrong balance")
+	}
+	if !(mgr.State.Accounts[tx.Sender] == 20) {
+		t.Error("receiver wrong balance")
+	}
+	//[ ] add tx to block
+	//[ ] check block calculations
+	//[ ] append block
+	//[ ] sign block
+	//[ ] check signature block
+} */
 
 // func TestTxSign(t *testing.T) {
 // 	kp := crypto.PairFromSecret("test")
