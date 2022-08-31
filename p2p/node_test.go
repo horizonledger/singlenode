@@ -20,10 +20,9 @@ func TestBasicCommand(t *testing.T) {
 	node.Mgr = &mgr
 
 	//req_msg := netio.MessageJSON{MessageType: netio.REQ, Command: netio.CMD_PING}
-	// //ntchan.REQ_in <- msg
+	//ntchan := netio.ConnNtchanStub("")
+	//ntchan.REQ_in <- req_msg
 	// reply_msg := HandlePing(msg)
-
-	// ntchan := netio.ConnNtchanStub("")
 
 	// ntchan.REQ_in <- req_msg
 	// reply := <-ntchan.REP_out

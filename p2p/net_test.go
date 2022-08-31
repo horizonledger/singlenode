@@ -96,13 +96,13 @@ func TestServer_Run(t *testing.T) {
 	// 	t.Error("name ", ntclient2.Alias)
 	// }
 
-	ntclient.Writer_queue <- "test"
+	//ntclient.Writer_queue <- "test"
 
 	//ntclient.quitchan <- true
 
 	//TODO close time limit
 	//https://stackoverflow.com/questions/49872097/idiomatic-way-for-reading-from-the-channel-for-a-certain-time
-	// outread := <-testsrv.Peers[0].NTchan.Reader_queue
+	//outread := <-testsrv.Peers[0].NTchan.Reader_queue
 
 	// time.Sleep(1000 * time.Millisecond)
 
