@@ -2,9 +2,11 @@ package main
 
 import (
 	"math/rand"
-	"singula/node/block"
-	"singula/node/chain"
 	"testing"
+
+	"singula.finance/node/chain"
+
+	"singula.finance/node/block"
 
 	"singula.finance/netio/crypto"
 )

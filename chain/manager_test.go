@@ -3,8 +3,9 @@ package chain
 import (
 	"encoding/hex"
 	"log"
-	"singula/node/block"
 	"testing"
+
+	"singula.finance/node/block"
 
 	"golang.org/x/exp/maps"
 	"singula.finance/netio/crypto"

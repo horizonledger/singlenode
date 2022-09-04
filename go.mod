@@ -1,4 +1,4 @@
-module singula/node
+module singula.finance/node
 
 go 1.19
 

@@ -8,12 +8,13 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"singula/node/block"
+
 	"strconv"
 	"time"
 
 	"singula.finance/netio"
 	"singula.finance/netio/crypto"
+	"singula.finance/node/block"
 )
 
 type AccountState struct {
@@ -120,7 +121,7 @@ func HandleTx(mgr *ChainManager, tx block.Tx) netio.Message {
 		return msg
 	} else {
 		vlog("invalid tx")
-		status := "error"
+		status := "invalid"
 		msg := netio.Message{MessageType: netio.REP, Command: netio.CMD_TX, Data: []byte(status)}
 		return msg
 	}

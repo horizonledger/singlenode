@@ -15,10 +15,9 @@ import (
 	"strconv"
 	"time"
 
-	"singula/node/chain"
-
 	"golang.org/x/exp/maps"
 	"singula.finance/netio"
+	"singula.finance/node/chain"
 )
 
 // var blocktime = 10000 * time.Millisecond
@@ -52,7 +51,7 @@ type TCPNode struct {
 	Loglevel      int
 	Config        Config
 	//
-	ChatSubscribers []netio.Ntchan
+	//ChatSubscribers []netio.Ntchan
 }
 
 // "DelegateName": "localhost",
@@ -135,7 +134,6 @@ func (t *TCPNode) HandleConnectTCP() {
 		Verbose := true
 		srcName := "localNode"
 		destName := strRemoteAddr
-		//ntchan := netio.ConnNtchan(newpeerConn, srcName, destName, Verbose, t.BROAD_signal)
 		ntchan := netio.ConnNtchan(newpeerConn, srcName, destName, Verbose)
 
 		rand.Seed(time.Now().UnixNano())
@@ -146,6 +144,8 @@ func (t *TCPNode) HandleConnectTCP() {
 		t.Peers = append(t.Peers, p)
 
 		go t.handleConnection(p)
+
+		go RequestReplyLoop(*t.Mgr, ntchan)
 
 		//conn.Close()
 
@@ -187,7 +187,7 @@ func (t *TCPNode) handleConnection(peer netio.Peer) {
 
 	//t.log(fmt.Sprintf("number of peers %v", len(t.Peers)))
 
-	netio.NetConnectorSetup(peer.NTchan, RequestReply)
+	netio.NetConnectorSetup(peer.NTchan)
 
 	//TODO
 	//EXAMPLE
@@ -309,7 +309,7 @@ func getConfig() *Config {
 
 }
 
-func runNodeWithConfig() {
+func RunNodeWithConfig() {
 
 	// 	go runAll(config)
 

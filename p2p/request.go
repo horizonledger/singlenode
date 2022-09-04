@@ -18,9 +18,11 @@ import (
 	"fmt"
 	"log"
 	"net"
+
 	"time"
 
 	"singula.finance/netio"
+	"singula.finance/node/chain"
 )
 
 //TODO move to node implementation
@@ -68,6 +70,12 @@ func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJS
 
 		return rmsg
 
+	// case netio.CMD_TX:
+	// 	t.log("Handle tx")
+	// msg = HandleTx(t, msg)
+	// data, _ := json.Marshal(msg.Data)
+	// reply_msg = netio.EdnConstructMsgMapData(netio.REP, netio.CMD_GETBLOCKS, string(data))
+
 	// case CMD_REGISTERALIAS:
 	// 	//TODO only pointer is set
 	// 	ntchan.Alias = "123"
@@ -93,16 +101,34 @@ func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJS
 
 }
 
-func RequestReply(ntchan netio.Ntchan, msgString string) string {
+func RequestReply(mgr chain.ChainManager, ntchan netio.Ntchan, msgString string) string {
 
-	//TODO separate namespace
+	msg, err := netio.ParseLineJson(msgString)
 
-	msg, _ := netio.ParseLineJson(msgString)
+	// fmt.Println("msg >> ", msg, err)
 
-	rmsg := RequestReplyFun(ntchan, msg)
-	rmsgstr, _ := json.Marshal(rmsg)
+	if err == nil {
+		fmt.Sprintf("Handle cmd %v", msg.Command)
+		rmsg := RequestReplyFun(ntchan, msg)
+		fmt.Sprintf("return msg %v", rmsg)
+		rmsgstr, _ := json.Marshal(rmsg)
 
-	fmt.Sprintf("Handle cmd %v", msg.Command)
+		return string(rmsgstr)
+	} else {
+		fmt.Println("?????")
+		returnerr := fmt.Sprintf("error %v", err)
+		fmt.Println(returnerr)
+		return returnerr
+	}
+}
 
-	return string(rmsgstr)
+func RequestReplyLoop(mgr chain.ChainManager, ntchan netio.Ntchan) {
+	for {
+		msg := <-ntchan.REQ_in
+		//fmt.Println("request %v", msg)
+		//vlog(ntchan, "request "+msg)
+		reply := RequestReply(mgr, ntchan, msg)
+		//reply := "testing"
+		ntchan.REP_out <- reply
+	}
 }

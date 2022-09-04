@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"singula/node/chain"
+	"singula.finance/node/chain"
 )
 
 func TestBasicCommand(t *testing.T) {

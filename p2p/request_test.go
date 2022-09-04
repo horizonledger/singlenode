@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"singula.finance/netio"
+	"singula.finance/node/chain"
 )
 
 func TestProcesser(t *testing.T) {
@@ -27,7 +28,8 @@ func TestProcesser(t *testing.T) {
 
 	readout2 := <-ntchan.REQ_in
 
-	reply := RequestReply(ntchan, readout2)
+	mgr := chain.CreateManager()
+	reply := RequestReply(mgr, ntchan, readout2)
 
 	m = netio.MessageJSON{MessageType: "REP", Command: "PONG"}
 	jm, _ = json.Marshal(m)
@@ -50,7 +52,8 @@ func TestProcesserLoop(t *testing.T) {
 
 	readout2 := <-ntchan.REQ_in
 
-	reply := RequestReply(ntchan, readout2)
+	mgr := chain.CreateManager()
+	reply := RequestReply(mgr, ntchan, readout2)
 
 	m = netio.MessageJSON{MessageType: "REP", Command: "PONG"}
 	jm, _ = json.Marshal(m)

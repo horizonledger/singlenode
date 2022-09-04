@@ -32,13 +32,15 @@ type TxSigmap struct {
 // }
 
 //TODO distinguish between tx and signed tx with extra struct
+//TODO consider rename MoneyTx
 type Tx struct {
 	TxType   string `json:"txType"`
 	Amount   int    `json:"amount"`
 	Sender   string `json:"sender"`
 	Receiver string `json:"receiver"`
 	Nonce    int    `json:"nonce"`
-	//TODO replace with txsig
+	//TODO replace with txsig (?)
+	//consider remove PubKey
 	SenderPubkey string `json:"senderPubkey,omitempty"`
 	Signature    string `json:"signature,omitempty"`
 	//Id           [32]byte `edn:"id"`           //gets assigned when verified in a block

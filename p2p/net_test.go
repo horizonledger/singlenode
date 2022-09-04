@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"singula.finance/netio"
+	"singula.finance/node/chain"
 )
 
 const test_node_port = 8080
@@ -18,6 +19,9 @@ func initserver() *TCPNode {
 
 	testsrv, err := NewNode()
 	testsrv.addr = ":" + strconv.Itoa(test_node_port)
+
+	mgr := chain.CreateManager()
+	testsrv.Mgr = &mgr
 
 	if err != nil {
 		log.Println("error starting TCP server")
