@@ -20,7 +20,8 @@ import (
 	"singula.finance/node/chain"
 )
 
-// var blocktime = 10000 * time.Millisecond
+var blocktime = 10000 * time.Millisecond
+
 // var logfile_name = "node.log"
 
 // const LOGLEVEL_OFF = 0
@@ -241,6 +242,13 @@ func runNode(t *TCPNode) {
 
 	nodeProccesses(t)
 
+	//if t.Config.DelgateEnabled {
+	//go utils.DoEvery(, chain.MakeBlock(mgr, blockTime))
+
+	//TODO!
+	go chain.MakeBlockLoop(t.Mgr, blocktime)
+	//}
+
 	//TODO single node mode or peer mode
 
 	// 	if err != nil {
@@ -293,6 +301,9 @@ func (t *TCPNode) initSyncChain(config Config) {
 	} else {
 		//restarting?
 		//load from disk
+		fmt.Println("read chain")
+		//TODO prevent writing blocks in wrong time order
+		t.Mgr.ReadChain()
 	}
 
 	// else {

@@ -274,7 +274,7 @@ func (mgr *ChainManager) ReadChain() bool {
 
 	if _, err := os.Stat(ChainStorageFile); os.IsNotExist(err) {
 		// path/to/whatever does not exist
-		vlog("storage file does not exist")
+		fmt.Println("storage file does not exist")
 		return false
 	}
 
@@ -289,7 +289,7 @@ func (mgr *ChainManager) ReadChain() bool {
 	mgr.Blocks = newblocks
 	mgr.ApplyBlocks(newblocks)
 
-	vlog(fmt.Sprintf("read chain success from %s. block height %d", ChainStorageFile, len(mgr.Blocks)))
+	fmt.Println("read chain success block height %i", len(mgr.Blocks))
 	return true
 
 }
@@ -363,6 +363,7 @@ func MakeBlock(mgr *ChainManager) {
 		mgr.WriteChain()
 
 	} else {
+		fmt.Println("no tx in pool")
 		//log.Printf("no block to make")
 		//handle special case of no tx
 		//now we don't add blocks, which means there are empty periods and blocks are not evenly spaced in time
@@ -371,6 +372,7 @@ func MakeBlock(mgr *ChainManager) {
 }
 
 func MakeBlockLoop(mgr *ChainManager, blocktime time.Duration) {
+	fmt.Println("MakeBlockLoop")
 
 	go func() {
 		for {
