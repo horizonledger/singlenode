@@ -55,6 +55,15 @@ type TCPNode struct {
 	//ChatSubscribers []netio.Ntchan
 }
 
+type Status struct {
+	Blockheight   int       `json:"Blockheight"`
+	LastBlocktime time.Time `json:"LastBlocktime"`
+	Servertime    time.Time `json:"Servertime"`
+	Starttime     time.Time `json:"Starttime"`
+	Timebehind    int64     `json:"Timebehind"`
+	Uptime        int64     `json:"Uptime"`
+}
+
 // "DelegateName": "localhost",
 
 // DelgateEnabled true
@@ -228,7 +237,9 @@ func runNode(t *TCPNode) {
 	go t.HandleConnectTCP()
 	go t.RunTCP()
 
-	RunWeb(t)
+	go RunWeb(t)
+
+	nodeProccesses(t)
 
 	//TODO single node mode or peer mode
 
@@ -237,39 +248,9 @@ func runNode(t *TCPNode) {
 	// 		return
 	// 	}
 
-	// 	//TODO! not get full chain after the init sync
-	// 	// if !config.CreateGenesis {
-	// 	// 	go func() {
-	// 	// 		for {
-	// 	// 			log.Println("fetch blocks loop")
-	// 	// 			FetchAllBlocks(config, node)
-	// 	// 			time.Sleep(10000 * time.Millisecond)
-	// 	// 		}
-	// 	// 	}()
-	// 	// }
-
 }
 
-//WIP currently in testnet there is a single initiator which is the delegate expected to create first block
-//TODO! replace with quering for blockheight?
-func (t *TCPNode) initSyncChain(config Config) {
-	if config.CreateGenesis {
-		fmt.Println("CreateGenesis")
-		genBlock := chain.MakeGenesisBlock()
-		t.Mgr.ApplyBlock(genBlock)
-		//TODO!
-		t.Mgr.AppendBlock(genBlock)
-		fmt.Println("accounts\n ", t.Mgr.State.Accounts)
-		//keys := reflect.ValueOf(t.Mgr.State.Accounts).MapKeys()
-
-		ks := maps.Keys(t.Mgr.State.Accounts)
-		fmt.Println("all balances: ", t.Mgr.State.Accounts)
-		fmt.Println("balance: ", t.Mgr.State.Accounts[ks[0]])
-
-	}
-
-	// else {
-
+func syncFrom() {
 	// 	//TODO! apply blocks
 	// 	success := t.Mgr.ReadChain()
 	// 	t.log(fmt.Sprintf("read chain success %v", success))
@@ -284,7 +265,55 @@ func (t *TCPNode) initSyncChain(config Config) {
 	// 		FetchAllBlocks(config, t)
 	// 	}
 
+	// 	// 	go func() {
+	// 	// 		for {
+	// 	// 			log.Println("fetch blocks loop")
+	// 	// 			FetchAllBlocks(config, node)
+	// 	// 			time.Sleep(10000 * time.Millisecond)
+	// 	// 		}
+	// 	// 	}()
+	// 	// }
+}
+
+//WIP currently in testnet there is a single initiator which is the delegate expected to create first block
+//TODO! replace with quering for blockheight?
+func (t *TCPNode) initSyncChain(config Config) {
+	if config.CreateGenesis {
+		fmt.Println("CreateGenesis")
+		genBlock := chain.MakeGenesisBlock()
+		t.Mgr.ApplyBlock(genBlock)
+		//TODO!
+		fmt.Println("accounts\n ", t.Mgr.State.Accounts)
+		//keys := reflect.ValueOf(t.Mgr.State.Accounts).MapKeys()
+
+		ks := maps.Keys(t.Mgr.State.Accounts)
+		fmt.Println("all balances: ", t.Mgr.State.Accounts)
+		fmt.Println("balance: ", t.Mgr.State.Accounts[ks[0]])
+
+	} else {
+		//restarting?
+		//load from disk
+	}
+
+	// else {
+	//syncFrom
 	// }
+}
+
+func nodeProccesses(t *TCPNode) {
+	// store chain processes
+	fmt.Println("nodeProccesses")
+
+	go func() {
+		for range time.Tick(time.Second * 10) {
+			//
+			fmt.Println("store blocks")
+			t.Mgr.WriteChain()
+		}
+
+	}()
+
+	//sync chain processes
 }
 
 func getConfig() *Config {

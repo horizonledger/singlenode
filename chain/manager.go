@@ -26,8 +26,8 @@ type ChainManager struct {
 	State   AccountState
 }
 
-const ChainStorageFile = "data/chain.json"
-const GenblockStorageFile = "data/genesis.json"
+const ChainStorageFile = "./data/chain.json"
+const GenblockStorageFile = "./data/genesis.json"
 
 const (
 	//Treasury_Address string = "P0614579c42f2"
@@ -252,6 +252,8 @@ func (mgr *ChainManager) ApplyBlock(block block.Block) {
 		//block.Txs[j].Id = txHash(block.Txs[j])
 		//og.Println("hash ", block.Txs[j].Id)
 	}
+
+	mgr.Blocks = append(mgr.Blocks, block)
 }
 
 func (mgr *ChainManager) ApplyBlocks(blocks []block.Block) {
@@ -263,6 +265,7 @@ func (mgr *ChainManager) ApplyBlocks(blocks []block.Block) {
 // trivial json storage
 func (mgr *ChainManager) WriteChain() {
 	dataJson, _ := json.Marshal(mgr.Blocks)
+	fmt.Println("store chain to ", ChainStorageFile, len(mgr.Blocks))
 	ioutil.WriteFile(ChainStorageFile, []byte(dataJson), 0644)
 }
 

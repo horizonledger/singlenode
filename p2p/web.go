@@ -6,20 +6,30 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"singula.finance/node/chain"
 )
 
-// func StatusContent(mgr *chain.ChainManager, t *TCPNode) Status {
+func StatusContent(mgr *chain.ChainManager, t *TCPNode) string {
 
-// 	servertime := time.Now()
-// 	uptimedur := time.Now().Sub(t.Starttime)
-// 	uptime := int64(uptimedur / time.Second)
-// 	lastblocktime := t.Mgr.LastBlock().Timestamp
-// 	timebehind := int64(servertime.Sub(lastblocktime) / time.Second)
-// 	status := Status{Blockheight: len(mgr.Blocks), Starttime: t.Starttime, Uptime: uptime, Servertime: servertime, LastBlocktime: lastblocktime, Timebehind: timebehind}
-// 	return status
-// }
+	servertime := time.Now()
+	uptimedur := time.Now().Sub(t.Starttime)
+	uptime := int64(uptimedur / time.Second)
+	lastblocktime := t.Mgr.LastBlock().Timestamp
+	timebehind := int64(servertime.Sub(lastblocktime) / time.Second)
+	status := Status{Blockheight: len(mgr.Blocks), Starttime: t.Starttime, Uptime: uptime, Servertime: servertime, LastBlocktime: lastblocktime, Timebehind: timebehind}
+	//return status
+	//sd, _ := json.Marshal(status)
+
+	content := ""
+
+	content += fmt.Sprintf("<br><h2>Status</h2><i>Blockheight %d</i><br>", status.Blockheight)
+	content += fmt.Sprintf("<br>Start time %s</i><br>", status.Starttime)
+	content += fmt.Sprintf("<br>Uptime %d</i><br>", status.Uptime)
+
+	return content
+}
 
 func BlockContent(mgr *chain.ChainManager) string {
 	content := ""
@@ -96,11 +106,10 @@ func RunWeb(t *TCPNode) {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		p := LoadContent(t.Mgr)
-		//statusdata := StatusContent(t.Mgr, t)
-		//sd, _ := json.Marshal(statusdata)
+		status := StatusContent(t.Mgr, t)
+
 		//nlog.Print(p)
-		sd := ".."
-		fmt.Fprintf(w, "<h1>Singula chain</h1>Status%s<br><div>%s </div>", sd, p)
+		fmt.Fprintf(w, "<h1>Singula chain</h1>%s<br><div>%s </div>", status, p)
 	})
 
 	http.HandleFunc("/blocks", func(w http.ResponseWriter, r *http.Request) {
