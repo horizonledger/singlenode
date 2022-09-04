@@ -31,6 +31,7 @@ type Config struct {
 	Verbose       bool
 	NodePort      int
 	CreateGenesis bool
+	WebPort       int
 }
 
 // //TODO rename
@@ -226,6 +227,8 @@ func runNode(t *TCPNode) {
 
 	go t.HandleConnectTCP()
 	go t.RunTCP()
+
+	RunWeb(t)
 
 	//TODO single node mode or peer mode
 

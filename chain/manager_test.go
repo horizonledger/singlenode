@@ -54,23 +54,23 @@ func TestTx(t *testing.T) {
 	addr_receiver := crypto.Address(crypto.PubKeyToHex(keypair_receiver.PubKey))
 	mgr.SetAccount(addr_receiver, 0)
 	log.Println("initial balance receiver = ", mgr.State.Accounts[addr_receiver])
-	//[ ] create tx
+	// create tx
 	tx := block.Tx{Nonce: 1, Amount: 10, Sender: addr_sender, Receiver: addr_receiver, SenderPubkey: pubkey_sender}
-	//[ ] sign tx
+	// sign tx
 	signature := block.SignTx(tx, keypair_sender.PrivKey)
 	tx.Signature = hex.EncodeToString(signature.Serialize())
-	//[ ] validate tx
-	//[ ] add tx to block
+	// validate tx
+	// add tx to block
 	HandleTx(&mgr, tx) //verify tx validity, add tx to Tx_pool and broadcast tx
 	//[ ] check block calculations
-	//[ ] append block
+	// append block
 	MakeBlock(&mgr) //create a block with tx (Apply tx, Append Block, empty Tx_pool)
-	//[ ] after tx is confirmed, balance should have changed
-	log.Println("final balance sender = ", mgr.State.Accounts[addr_sender])
+	//after tx is confirmed, balance should have changed
+	//log.Println("final balance sender = ", mgr.State.Accounts[addr_sender])
 	if !(mgr.State.Accounts[tx.Sender] == 90) {
 		t.Error("sender wrong balance")
 	}
-	log.Println("final balance receiver = ", mgr.State.Accounts[addr_receiver])
+	//log.Println("final balance receiver = ", mgr.State.Accounts[addr_receiver])
 	if !(mgr.State.Accounts[tx.Receiver] == 10) {
 		t.Error("receiver wrong balance")
 	}
