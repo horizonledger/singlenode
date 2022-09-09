@@ -73,7 +73,7 @@ func RequestReplyFun(mgr chain.ChainManager, ntchan netio.Ntchan, msg netio.Mess
 		fmt.Println("Handle tx")
 	// msg = HandleTx(t, msg)
 	// data, _ := json.Marshal(msg.Data)
-	// reply_msg = netio.EdnConstructMsgMapData(netio.REP, netio.CMD_GETBLOCKS, string(data))
+	//rmsg := netio.MessageJSON{MessageType: "REP", Command: "TX", Data: "ok"}
 
 	// case CMD_REGISTERALIAS:
 	// 	//TODO only pointer is set
