@@ -12,6 +12,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"runtime"
 	"strconv"
 	"time"
 
@@ -243,10 +244,13 @@ func runNode(t *TCPNode) {
 	nodeProccesses(t)
 
 	//if t.Config.DelgateEnabled {
-	//go utils.DoEvery(, chain.MakeBlock(mgr, blockTime))
+	//go utils.DoEveryF(blocktime, chain.MakeBlock(t.Mgr))
+	//go chain.MakeBlock(t.Mgr, blocktime)
+
+	go chain.MakeBlockLoop(t.Mgr, blocktime)
 
 	//TODO!
-	go chain.MakeBlockLoop(t.Mgr, blocktime)
+	fmt.Println("NumGoroutine ", runtime.NumGoroutine())
 	//}
 
 	//TODO single node mode or peer mode

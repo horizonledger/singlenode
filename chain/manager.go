@@ -36,7 +36,7 @@ const (
 )
 
 func vlog(msg string) {
-	//log.Println(msg)
+	//log.Println(msg)ñ
 }
 
 // TODO
@@ -253,7 +253,6 @@ func (mgr *ChainManager) ApplyBlock(block block.Block) {
 		//og.Println("hash ", block.Txs[j].Id)
 	}
 
-	mgr.Blocks = append(mgr.Blocks, block)
 }
 
 func (mgr *ChainManager) ApplyBlocks(blocks []block.Block) {
@@ -354,13 +353,16 @@ func MakeBlock(mgr *ChainManager) {
 		new_block = blockHash(new_block)
 
 		mgr.ApplyBlock(new_block)
+		fmt.Println("??? ", mgr.BlockHeight())
 		//TODO! fix
 		mgr.AppendBlock(new_block)
+
+		fmt.Println("??? ", mgr.BlockHeight())
 
 		vlog(fmt.Sprintf("new block %v", new_block))
 		EmptyPool(mgr)
 
-		mgr.WriteChain()
+		//mgr.WriteChain()
 
 	} else {
 		fmt.Println("no tx in pool")
@@ -371,13 +373,16 @@ func MakeBlock(mgr *ChainManager) {
 
 }
 
+func (mgr *ChainManager) ApplyAppendBlock(block block.Block) {
+	mgr.ApplyBlock(block)
+	mgr.AppendBlock(block)
+}
+
 func MakeBlockLoop(mgr *ChainManager, blocktime time.Duration) {
 	fmt.Println("MakeBlockLoop")
 
-	go func() {
-		for {
-			MakeBlock(mgr)
-			time.Sleep(blocktime)
-		}
-	}()
+	for range time.Tick(blocktime) {
+		MakeBlock(mgr)
+	}
+
 }

@@ -70,8 +70,8 @@ func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJS
 
 		return rmsg
 
-	// case netio.CMD_TX:
-	// 	t.log("Handle tx")
+	case netio.CMD_TX:
+		fmt.Println("Handle tx")
 	// msg = HandleTx(t, msg)
 	// data, _ := json.Marshal(msg.Data)
 	// reply_msg = netio.EdnConstructMsgMapData(netio.REP, netio.CMD_GETBLOCKS, string(data))
