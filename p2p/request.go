@@ -25,9 +25,9 @@ import (
 	"singula.finance/node/chain"
 )
 
-//TODO move to node implementation
+//TODO pass manager
 
-func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJSON {
+func RequestReplyFun(mgr chain.ChainManager, ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJSON {
 
 	switch msg.Command {
 
@@ -57,15 +57,14 @@ func RequestReplyFun(ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJS
 		return rmsg
 
 	case netio.CMD_BALANCE:
-		//TODO
-		//balance := t.Mgr.State.Accounts[a]
-		//fmt.Println("balance for ", a, balance, t.Mgr.State.Accounts)
+		var a string
+		json.Unmarshal(msg.Data, &a)
+		b := string(a)
+		balance := mgr.State.Accounts[b]
 
-		balance := 100
 		balJson, _ := json.Marshal(balance)
 		raw := json.RawMessage(balJson)
 
-		//rmsg := MessageJSON{MessageType: "REP", Command: "BALANCE", Data: &balJson}
 		rmsg := netio.MessageJSON{MessageType: "REP", Command: "BALANCE", Data: raw}
 
 		return rmsg
@@ -109,7 +108,7 @@ func RequestReply(mgr chain.ChainManager, ntchan netio.Ntchan, msgString string)
 
 	if err == nil {
 		fmt.Sprintf("Handle cmd %v", msg.Command)
-		rmsg := RequestReplyFun(ntchan, msg)
+		rmsg := RequestReplyFun(mgr, ntchan, msg)
 		fmt.Sprintf("return msg %v", rmsg)
 		rmsgstr, _ := json.Marshal(rmsg)
 
