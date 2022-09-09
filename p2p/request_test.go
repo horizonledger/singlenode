@@ -1,14 +1,10 @@
 package p2p
 
 import (
-	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"singula.finance/netio"
-	"singula.finance/netio/crypto"
-	"singula.finance/node/block"
 	"singula.finance/node/chain"
 )
 

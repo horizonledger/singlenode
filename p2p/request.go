@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"singula.finance/netio"
+	"singula.finance/node/block"
 	"singula.finance/node/chain"
 )
 
@@ -71,9 +72,12 @@ func RequestReplyFun(mgr chain.ChainManager, ntchan netio.Ntchan, msg netio.Mess
 
 	case netio.CMD_TX:
 		fmt.Println("Handle tx")
-	// msg = HandleTx(t, msg)
-	// data, _ := json.Marshal(msg.Data)
-	//rmsg := netio.MessageJSON{MessageType: "REP", Command: "TX", Data: "ok"}
+		var tx block.Tx
+		json.Unmarshal(msg.Data, &tx)
+		msg := chain.HandleTx(&mgr, tx)
+		return msg
+		// data, _ := json.Marshal(msg.Data)
+		//rmsg := netio.MessageJSON{MessageType: "REP", Command: "TX", Data: "ok"}
 
 	// case CMD_REGISTERALIAS:
 	// 	//TODO only pointer is set
@@ -114,7 +118,7 @@ func RequestReply(mgr chain.ChainManager, ntchan netio.Ntchan, msgString string)
 
 		return string(rmsgstr)
 	} else {
-		fmt.Println("?????")
+		//fmt.Println("?????")
 		returnerr := fmt.Sprintf("error %v", err)
 		fmt.Println(returnerr)
 		return returnerr

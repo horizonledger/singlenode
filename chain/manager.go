@@ -103,7 +103,7 @@ func TxValid(mgr *ChainManager, tx block.Tx) bool {
 	return sufficientBalance
 }
 
-func HandleTx(mgr *ChainManager, tx block.Tx) netio.Message {
+func HandleTx(mgr *ChainManager, tx block.Tx) netio.MessageJSON {
 	//hash of timestamp is same, check lenght of bytes used?
 	//timestamp := time.Now().Unix()
 
@@ -111,20 +111,24 @@ func HandleTx(mgr *ChainManager, tx block.Tx) netio.Message {
 	//vlog("hash %x time %s sign %x", tx.Id, timestamp, tx.Signature)
 
 	//TODO its own function
+	var rmsg netio.MessageJSON
 	if TxValid(mgr, tx) {
+		fmt.Println("valid tx")
 		//tx.Id = crypto.TxHash(tx)
 		mgr.Tx_pool = append(mgr.Tx_pool, tx)
 		vlog(fmt.Sprintf("append tx to pool %v", mgr.Tx_pool))
 		//msg := Message{messageType: netio.REP, command: netio.CMD_TX}
 		status := "ok"
-		msg := netio.Message{MessageType: netio.REP, Command: netio.CMD_TX, Data: []byte(status)}
-		return msg
+		rmsg = netio.MessageJSON{MessageType: netio.REP, Command: netio.CMD_TX, Data: []byte(status)}
+		//return msg
 	} else {
-		vlog("invalid tx")
+		fmt.Println("invalid tx")
 		status := "invalid"
-		msg := netio.Message{MessageType: netio.REP, Command: netio.CMD_TX, Data: []byte(status)}
-		return msg
+		rmsg = netio.MessageJSON{MessageType: netio.REP, Command: netio.CMD_TX, Data: []byte(status)}
+		//return msg
 	}
+	fmt.Println("rmsg ", rmsg)
+	return rmsg
 
 	//log.Printf("tx_pool_size: \n%d", tx_pool_size)
 
