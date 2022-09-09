@@ -152,23 +152,41 @@ func TestTxFile(t *testing.T) {
 
 	os.Remove("tx_test.json")
 
-	var rtx Tx
+	var newTx Tx
 
-	if err := json.Unmarshal(dat, &rtx); err != nil {
+	if err := json.Unmarshal(dat, &newTx); err != nil {
 		panic(err)
 	}
 
-	//log.Println(rtx.SenderPubkey)
-
-	if !(rtx.Amount == 10) {
+	if !(newTx.Amount == 10) {
 		t.Error("amount wrong ")
 	}
+
+	if newTx.Amount != tx.Amount {
+		t.Error("amount not equal")
+	}
+
+	if newTx.Receiver != tx.Receiver {
+		t.Error("Receiver not equal")
+	}
+
+	if newTx.Sender != tx.Sender {
+		t.Error("Sender not equal")
+	}
+
+	//TODO more test for equal
+
+	//log.Println(rtx.SenderPubkey)
 
 	verified := VerifyTxSig(tx)
 
 	if !verified {
 		t.Error("verify tx fail")
 	}
+
+}
+
+func TestSeralizeTx(t *testing.T) {
 
 }
 
