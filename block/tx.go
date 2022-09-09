@@ -106,6 +106,22 @@ func SignTx(tx Tx, privkey btcec.PrivateKey) btcec.Signature {
 
 }
 
+func SignTxKP(tx Tx, kp crypto.Keypair) btcec.Signature {
+	//TODO sign tx not just id
+	txJson, _ := json.Marshal(tx)
+	//log.Println(string(txJson))
+	//message := fmt.Sprintf("%d", tx.Id)
+
+	messageHash := chainhash.DoubleHashB([]byte(txJson))
+	signature, err := kp.PrivKey.Sign(messageHash)
+	if err != nil {
+		fmt.Println("err ", err)
+		//return
+	}
+	return *signature
+
+}
+
 func RemoveSigTx(tx Tx) Tx {
 	tx.Signature = ""
 	return tx

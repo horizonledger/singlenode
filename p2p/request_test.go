@@ -101,34 +101,42 @@ func TestBalanceReq(t *testing.T) {
 }
 func TestTxReq(t *testing.T) {
 
-	ntchan := netio.ConnNtchanStub("test", "testout")
-	netio.NetConnectorSetupMock(ntchan)
+	// ntchan := netio.ConnNtchanStub("test", "testout")
+	// netio.NetConnectorSetupMock(ntchan)
 
-	mgr := chain.CreateManager()
-	mgr.InitAccounts()
+	// //setup mgr
+	// mgr := chain.CreateManager()
+	// mgr.InitAccounts()
 
-	keypair_sender := crypto.PairFromSecret("sender")
-	pubkey_sender := crypto.PubKeyToHex(keypair_sender.PubKey)
-	addr_sender := crypto.Address(pubkey_sender)
+	// keypair_sender := crypto.PairFromSecret("sender")
+	// pubkey_sender := crypto.PubKeyToHex(keypair_sender.PubKey)
+	// addr_sender := crypto.Address(pubkey_sender)
 
-	keypair_receiver := crypto.PairFromSecret("receiver")
-	addr_receiver := crypto.Address(crypto.PubKeyToHex(keypair_receiver.PubKey))
+	// keypair_receiver := crypto.PairFromSecret("receiver")
+	// addr_receiver := crypto.Address(crypto.PubKeyToHex(keypair_receiver.PubKey))
 
-	// create tx
-	tx := block.Tx{Nonce: 1, Amount: 10, Sender: addr_sender, Receiver: addr_receiver, SenderPubkey: pubkey_sender}
-	// sign tx
-	signature := block.SignTx(tx, keypair_sender.PrivKey)
-	tx.Signature = hex.EncodeToString(signature.Serialize())
+	// // create tx
+	// tx := block.Tx{Nonce: 1, Amount: 10, Sender: addr_sender, Receiver: addr_receiver, SenderPubkey: pubkey_sender}
+	// // sign tx
+	// signature := block.SignTx(tx, keypair_sender.PrivKey)
+	// tx.Signature = hex.EncodeToString(signature.Serialize())
 
-	bb, _ := json.Marshal(tx)
-	raw := json.RawMessage(bb)
-	fmt.Println(raw)
+	// bb, _ := json.Marshal(tx)
+	// raw := json.RawMessage(bb)
+	// fmt.Println(raw)
 
-	if len(raw) == 0 {
-		t.Error("raw ", raw)
-	}
+	// if len(raw) == 0 {
+	// 	t.Error("raw ", raw)
+	// }
+
+	// m := netio.MessageJSON{MessageType: "REQ", Command: "TX", Data: raw}
+	// jm, _ := json.Marshal(m)
+
+	// ntchan.Reader_queue <- string(jm)
 
 	//TODO parse back and check
+
+	//reply := RequestReply(mgr, ntchan, readout2)
 
 	//TODO let mgr apply the tx
 
