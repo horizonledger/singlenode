@@ -216,6 +216,19 @@ func GenesisTx() block.Tx {
 	return gTx
 }
 
+func GenesisTx2(i int) block.Tx {
+
+	s := fmt.Sprintf("test%v", i)
+	kp := crypto.PairFromSecret(s)
+	a := crypto.Address(crypto.PubKeyToHex(kp.PubKey))
+	genesisAmount := 20
+	rand.Seed(time.Now().UnixNano())
+	randNonce := rand.Intn(100)
+
+	gTx := block.Tx{Nonce: randNonce, Sender: Treasury_Address, Receiver: a, Amount: genesisAmount}
+	return gTx
+}
+
 func MakeGenesisBlock() block.Block {
 
 	emptyhash := [32]byte{}
@@ -227,7 +240,8 @@ func MakeGenesisBlock() block.Block {
 	genesisTx := []block.Tx{}
 	numseeder := 10
 	for i := 0; i < numseeder; i++ {
-		someTx := GenesisTx()
+		//someTx := GenesisTx()
+		someTx := GenesisTx2(i)
 		genesisTx = append(genesisTx, someTx)
 	}
 

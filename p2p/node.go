@@ -128,7 +128,7 @@ func (t *TCPNode) RunTCP() (err error) {
 
 // }
 
-//handle new connection
+// handle new connection
 func (t *TCPNode) HandleConnectTCP() {
 
 	//TODO! hearbeart, check if peers are alive
@@ -191,7 +191,7 @@ func (t *TCPNode) HandleConnectTCP() {
 // }
 
 // //func (t *TCPNode) handleConnection(mgr *chain.ChainManager, ntchan netio.Ntchan) {
-//func (t *TCPNode) handleConnection(mgr *chain.ChainManager, peer netio.Peer) {
+// func (t *TCPNode) handleConnection(mgr *chain.ChainManager, peer netio.Peer) {
 func (t *TCPNode) handleConnection(peer netio.Peer) {
 	//tr := 100 * time.Millisecond
 	//defer ntchan.Conn.Close()
@@ -287,8 +287,8 @@ func syncFrom() {
 	// 	// }
 }
 
-//WIP currently in testnet there is a single initiator which is the delegate expected to create first block
-//TODO! replace with quering for blockheight?
+// WIP currently in testnet there is a single initiator which is the delegate expected to create first block
+// TODO! replace with quering for blockheight?
 func (t *TCPNode) initSyncChain(config Config) {
 	if config.CreateGenesis {
 		fmt.Println("CreateGenesis")
@@ -382,6 +382,8 @@ func RunNodeWithConfig() {
 		mgr := chain.CreateManager()
 		node.Mgr = &mgr
 		node.Mgr.InitAccounts()
+		//DEBUG
+		node.Mgr.SetAccount("P21bb920c2828", 1000)
 		node.initSyncChain(node.Config)
 		runNode(node)
 
