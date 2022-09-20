@@ -350,7 +350,11 @@ func ReadGenBlock() block.Block {
 
 func (mgr *ChainManager) LastBlock() block.Block {
 	n := len(mgr.Blocks)
-	return mgr.Blocks[n-1]
+	fmt.Println(">>>> ", n)
+	if n >= 0 {
+		return mgr.Blocks[n-1]
+	}
+	return mgr.Blocks[0]
 }
 
 // function to create blocks, called periodically

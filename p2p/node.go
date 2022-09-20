@@ -293,7 +293,7 @@ func (t *TCPNode) initSyncChain(config Config) {
 	if config.CreateGenesis {
 		fmt.Println("CreateGenesis")
 		genBlock := chain.MakeGenesisBlock()
-		t.Mgr.ApplyBlock(genBlock)
+		t.Mgr.ApplyAppendBlock(genBlock)
 		//TODO!
 		fmt.Println("accounts\n ", t.Mgr.State.Accounts)
 		//keys := reflect.ValueOf(t.Mgr.State.Accounts).MapKeys()
@@ -378,7 +378,7 @@ func RunNodeWithConfig() {
 	signal.Notify(quit, os.Interrupt)
 
 	if err == nil {
-		fmt.Printf("...")
+
 		mgr := chain.CreateManager()
 		node.Mgr = &mgr
 		node.Mgr.InitAccounts()

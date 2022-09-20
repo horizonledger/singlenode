@@ -16,7 +16,8 @@ func StatusContent(mgr *chain.ChainManager, t *TCPNode) string {
 	servertime := time.Now()
 	uptimedur := time.Now().Sub(t.Starttime)
 	uptime := int64(uptimedur / time.Second)
-	lastblocktime := t.Mgr.LastBlock().Timestamp
+	lb := t.Mgr.LastBlock()
+	lastblocktime := lb.Timestamp
 	timebehind := int64(servertime.Sub(lastblocktime) / time.Second)
 	status := Status{Blockheight: len(mgr.Blocks), Starttime: t.Starttime, Uptime: uptime, Servertime: servertime, LastBlocktime: lastblocktime, Timebehind: timebehind}
 	//return status
@@ -79,7 +80,7 @@ func Txpoolcontent(mgr *chain.ChainManager) string {
 	return content
 }
 
-//HTTP
+// HTTP
 func LoadContent(mgr *chain.ChainManager) string {
 	content := ""
 
