@@ -28,7 +28,7 @@ import (
 
 //TODO pass manager
 
-func RequestReplyFun(mgr chain.ChainManager, ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJSON {
+func RequestReplyFun(mgr *chain.ChainManager, ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJSON {
 
 	switch msg.Command {
 
@@ -74,7 +74,7 @@ func RequestReplyFun(mgr chain.ChainManager, ntchan netio.Ntchan, msg netio.Mess
 		fmt.Println("Handle tx")
 		var tx block.Tx
 		json.Unmarshal(msg.Data, &tx)
-		msg := chain.HandleTx(&mgr, tx)
+		msg := chain.HandleTx(mgr, tx)
 		return msg
 		// data, _ := json.Marshal(msg.Data)
 		//rmsg := netio.MessageJSON{MessageType: "REP", Command: "TX", Data: "ok"}
@@ -104,7 +104,7 @@ func RequestReplyFun(mgr chain.ChainManager, ntchan netio.Ntchan, msg netio.Mess
 
 }
 
-func RequestReply(mgr chain.ChainManager, ntchan netio.Ntchan, msgString string) string {
+func RequestReply(mgr *chain.ChainManager, ntchan netio.Ntchan, msgString string) string {
 
 	msg, err := netio.ParseLineJson(msgString)
 
@@ -118,14 +118,14 @@ func RequestReply(mgr chain.ChainManager, ntchan netio.Ntchan, msgString string)
 
 		return string(rmsgstr)
 	} else {
-		//fmt.Println("?????")
+
 		returnerr := fmt.Sprintf("error %v", err)
 		fmt.Println(returnerr)
 		return returnerr
 	}
 }
 
-func RequestReplyLoop(mgr chain.ChainManager, ntchan netio.Ntchan) {
+func RequestReplyLoop(mgr *chain.ChainManager, ntchan netio.Ntchan) {
 	for {
 		msg := <-ntchan.REQ_in
 		//fmt.Println("request %v", msg)

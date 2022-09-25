@@ -17,7 +17,7 @@ func TestBasicCommand(t *testing.T) {
 	//defer node.Close()
 	node.addr = ":" + strconv.Itoa(8080)
 	//node.Loglevel = LOGLEVEL_OFF
-	node.Mgr = &mgr
+	node.Mgr = mgr
 
 	//req_msg := netio.MessageJSON{MessageType: netio.REQ, Command: netio.CMD_PING}
 	//ntchan := netio.ConnNtchanStub("")

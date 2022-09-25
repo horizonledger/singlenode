@@ -84,6 +84,7 @@ func TxValid(mgr *ChainManager, tx block.Tx) bool {
 	//TODO check receiver has valid address format
 
 	sufficientBalance := mgr.State.Accounts[tx.Sender] >= tx.Amount
+	fmt.Println("balance check: ", mgr.State.Accounts[tx.Sender], tx.Amount)
 	if !sufficientBalance {
 		vlog("insufficientBalance")
 	} else {
@@ -116,6 +117,7 @@ func HandleTx(mgr *ChainManager, tx block.Tx) netio.MessageJSON {
 		fmt.Println("valid tx")
 		//tx.Id = crypto.TxHash(tx)
 		mgr.Tx_pool = append(mgr.Tx_pool, tx)
+
 		vlog(fmt.Sprintf("append tx to pool %v", mgr.Tx_pool))
 		//msg := Message{messageType: netio.REP, command: netio.CMD_TX}
 		status := "ok"
@@ -127,7 +129,7 @@ func HandleTx(mgr *ChainManager, tx block.Tx) netio.MessageJSON {
 		rmsg = netio.MessageJSON{MessageType: netio.REP, Command: netio.CMD_TX, Data: []byte(status)}
 		//return msg
 	}
-	fmt.Println("rmsg ", rmsg)
+
 	return rmsg
 
 	//log.Printf("tx_pool_size: \n%d", tx_pool_size)
@@ -350,7 +352,7 @@ func ReadGenBlock() block.Block {
 
 func (mgr *ChainManager) LastBlock() block.Block {
 	n := len(mgr.Blocks)
-	fmt.Println(">>>> ", n)
+	//fmt.Println("blocks >> ", n)
 	if n >= 0 {
 		return mgr.Blocks[n-1]
 	}
@@ -375,19 +377,19 @@ func MakeBlock(mgr *ChainManager) {
 		new_block = blockHash(new_block)
 
 		mgr.ApplyBlock(new_block)
-		fmt.Println("??? ", mgr.BlockHeight())
-		//TODO! fix
 		mgr.AppendBlock(new_block)
 
-		fmt.Println("??? ", mgr.BlockHeight())
-
 		vlog(fmt.Sprintf("new block %v", new_block))
+		//TODO
 		EmptyPool(mgr)
 
 		//mgr.WriteChain()
 
 	} else {
-		fmt.Println("no tx in pool")
+		//TODO! fix
+
+		fmt.Println("no tx in pool ", len(mgr.Tx_pool))
+
 		//log.Printf("no block to make")
 		//handle special case of no tx
 		//now we don't add blocks, which means there are empty periods and blocks are not evenly spaced in time
@@ -404,6 +406,7 @@ func MakeBlockLoop(mgr *ChainManager, blocktime time.Duration) {
 	fmt.Println("MakeBlockLoop")
 
 	for range time.Tick(blocktime) {
+		//fmt.Printf(">> outer??: %p\n", mgr)
 		MakeBlock(mgr)
 	}
 

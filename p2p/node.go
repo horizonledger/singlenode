@@ -45,7 +45,7 @@ type TCPNode struct {
 	accepting     bool
 	ConnectedChan chan net.Conn //channel of newly connected clients/peers
 	Peers         []netio.Peer
-	Mgr           *chain.ChainManager
+	Mgr           chain.ChainManager
 	BROAD_out     chan string
 	BROAD_in      chan string
 	BROAD_signal  chan string
@@ -157,7 +157,8 @@ func (t *TCPNode) HandleConnectTCP() {
 
 		go t.handleConnection(p)
 
-		go RequestReplyLoop(*t.Mgr, ntchan)
+		//go RequestReplyLoop(*t.Mgr, ntchan)
+		go RequestReplyLoop(&t.Mgr, ntchan)
 
 		//conn.Close()
 
@@ -247,7 +248,9 @@ func runNode(t *TCPNode) {
 	//go utils.DoEveryF(blocktime, chain.MakeBlock(t.Mgr))
 	//go chain.MakeBlock(t.Mgr, blocktime)
 
-	go chain.MakeBlockLoop(t.Mgr, blocktime)
+	go chain.MakeBlockLoop(&t.Mgr, blocktime)
+
+	//func RequestReplyFun(mgr *chain.ChainManager, ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJSON {
 
 	//TODO!
 	fmt.Println("NumGoroutine ", runtime.NumGoroutine())
@@ -380,8 +383,9 @@ func RunNodeWithConfig() {
 	if err == nil {
 
 		mgr := chain.CreateManager()
-		node.Mgr = &mgr
+		node.Mgr = mgr
 		node.Mgr.InitAccounts()
+
 		//DEBUG
 		node.Mgr.SetAccount("P21bb920c2828", 1000)
 		node.initSyncChain(node.Config)

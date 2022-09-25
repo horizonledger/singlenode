@@ -106,21 +106,21 @@ func RunWeb(t *TCPNode) {
 	log.Printf("start webserver %d", t.Config.WebPort)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		p := LoadContent(t.Mgr)
-		status := StatusContent(t.Mgr, t)
+		p := LoadContent(&t.Mgr)
+		status := StatusContent(&t.Mgr, t)
 
 		//nlog.Print(p)
 		fmt.Fprintf(w, "<h1>Singula chain</h1>%s<br><div>%s </div>", status, p)
 	})
 
 	http.HandleFunc("/blocks", func(w http.ResponseWriter, r *http.Request) {
-		p := BlockContent(t.Mgr)
+		p := BlockContent(&t.Mgr)
 		//nlog.Print(p)
 		fmt.Fprintf(w, "<div>%s</div>", p)
 	})
 
 	http.HandleFunc("/accounts", func(w http.ResponseWriter, r *http.Request) {
-		p := AccountContent(t.Mgr)
+		p := AccountContent(&t.Mgr)
 		//nlog.Print(p)
 		fmt.Fprintf(w, "<div>%s</div>", p)
 	})

@@ -86,6 +86,10 @@ func TestTx(t *testing.T) {
 	if mgr.BlockHeight() != 2 {
 		t.Error("wrong height after apply block", mgr.BlockHeight())
 	}
+	if len(mgr.Tx_pool) != 0 {
+		t.Error("tx pool stil full")
+	}
+
 	//after tx is confirmed, balance should have changed
 	//log.Println("final balance sender = ", mgr.State.Accounts[addr_sender])
 	if !(mgr.State.Accounts[tx.Sender] == 90) {

@@ -29,7 +29,7 @@ func TestProcesser(t *testing.T) {
 	readout2 := <-ntchan.REQ_in
 
 	mgr := chain.CreateManager()
-	reply := RequestReply(mgr, ntchan, readout2)
+	reply := RequestReply(&mgr, ntchan, readout2)
 
 	m = netio.MessageJSON{MessageType: "REP", Command: "PONG"}
 	jm, _ = json.Marshal(m)
@@ -53,7 +53,7 @@ func TestProcesserLoop(t *testing.T) {
 	readout2 := <-ntchan.REQ_in
 
 	mgr := chain.CreateManager()
-	reply := RequestReply(mgr, ntchan, readout2)
+	reply := RequestReply(&mgr, ntchan, readout2)
 
 	m = netio.MessageJSON{MessageType: "REP", Command: "PONG"}
 	jm, _ = json.Marshal(m)
@@ -82,7 +82,7 @@ func TestBalanceReq(t *testing.T) {
 
 	readout2 := <-ntchan.REQ_in
 
-	reply := RequestReply(mgr, ntchan, readout2)
+	reply := RequestReply(&mgr, ntchan, readout2)
 
 	cc, _ := json.Marshal(400)
 	raw2 := json.RawMessage(cc)
