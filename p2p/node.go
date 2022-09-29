@@ -124,9 +124,7 @@ func (t *TCPNode) RunTCP() (err error) {
 	return
 }
 
-// func (t *TCPNode) HandleDisconnect() {
-
-// }
+// func (t *TCPNode) HandleDisconnect() {}
 
 // handle new connection
 func (t *TCPNode) HandleConnectTCP() {
@@ -160,6 +158,8 @@ func (t *TCPNode) HandleConnectTCP() {
 		//go RequestReplyLoop(*t.Mgr, ntchan)
 		go RequestReplyLoop(&t.Mgr, ntchan)
 
+		go PubSubLoop(&t.Mgr, ntchan)
+
 		//conn.Close()
 
 	}
@@ -191,8 +191,27 @@ func (t *TCPNode) HandleConnectTCP() {
 
 // }
 
-// //func (t *TCPNode) handleConnection(mgr *chain.ChainManager, ntchan netio.Ntchan) {
-// func (t *TCPNode) handleConnection(mgr *chain.ChainManager, peer netio.Peer) {
+func pubmsg(t *TCPNode, msg string) {
+
+	for _, peer := range t.Peers {
+		//fmt.Println("peer ", reflect.TypeOf(peer))
+
+		//peer.NTchan.Writer_queue <- msg
+		peer.NTchan.PUB_out <- msg
+	}
+}
+
+// TODO
+func (t *TCPNode) pubNumpeersloop() {
+
+	c, _ := json.Marshal(len(t.Peers))
+	msg := netio.Message{MessageType: "PUB", Command: netio.CMD_NUMPEERS, Data: c}
+	stringmsg := netio.ToJSONMessage(msg)
+	pubmsg(t, stringmsg)
+
+	//add to list of peers?
+}
+
 func (t *TCPNode) handleConnection(peer netio.Peer) {
 	//tr := 100 * time.Millisecond
 	//defer ntchan.Conn.Close()
@@ -200,21 +219,9 @@ func (t *TCPNode) handleConnection(peer netio.Peer) {
 
 	//t.log(fmt.Sprintf("number of peers %v", len(t.Peers)))
 
+	//TODO numclient versus peers
 	netio.NetConnectorSetup(peer.NTchan)
-
-	//TODO
-	//EXAMPLE
-	//publoop all
-	for i, peer := range t.Peers {
-		fmt.Println(i)
-		//fmt.Println("peer ", reflect.TypeOf(peer))
-		c, _ := json.Marshal(len(t.Peers))
-		msg := netio.Message{MessageType: "PUB", Command: netio.CMD_NUMPEERS, Data: c}
-
-		peer.NTchan.Writer_queue <- netio.ToJSONMessage(msg)
-	}
-
-	//add to list of peers?
+	t.pubNumpeersloop()
 
 }
 
@@ -247,8 +254,6 @@ func runNode(t *TCPNode) {
 	//if t.Config.DelgateEnabled {
 	//go utils.DoEveryF(blocktime, chain.MakeBlock(t.Mgr))
 	//go chain.MakeBlock(t.Mgr, blocktime)
-
-	go chain.MakeBlockLoop(&t.Mgr, blocktime)
 
 	//func RequestReplyFun(mgr *chain.ChainManager, ntchan netio.Ntchan, msg netio.MessageJSON) netio.MessageJSON {
 
@@ -318,6 +323,17 @@ func (t *TCPNode) initSyncChain(config Config) {
 	// }
 }
 
+func pubtime(t *TCPNode) {
+	for range time.Tick(time.Second * 10) {
+		dt := time.Now()
+		dtlJson, _ := json.Marshal(dt.String())
+		r := json.RawMessage(dtlJson)
+		rmsg := netio.MessageJSON{MessageType: "PUB", Command: "TIME", Data: r}
+		rmsgstr, _ := json.Marshal(rmsg)
+		pubmsg(t, string(rmsgstr))
+	}
+}
+
 func nodeProccesses(t *TCPNode) {
 	// store chain processes
 	fmt.Println("nodeProccesses")
@@ -330,6 +346,10 @@ func nodeProccesses(t *TCPNode) {
 		}
 
 	}()
+
+	go chain.MakeBlockLoop(&t.Mgr, blocktime)
+
+	go pubtime(t)
 
 	//sync chain processes
 }

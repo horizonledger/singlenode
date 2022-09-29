@@ -1,7 +1,8 @@
-# Tutorial 
+# Networking Tutorial 
 
-Singula consists of two separate layers. The netio base layer and the consensus logic on top of this.
-the node reads and writes from TPC/IP and all interaction with network is "virtualized" with go channels.
+This is an introduction into how the networking layer of Singula works.
+Singula is written in golang and makes heavy use of go channels.
+It consists of two separate layers. The netio base layer and the consensus logic on top of this. The node reads and writes from TPC/IP and all interaction with network is "virtualized" with go channels.
 
 Instead of reading and writing to the network directly, higher level code needs to use the channels (Ntchan). This allow to enforce good protocol use and re-use of these protocols through the node software. Instead of thinking of code in terms of separate networks, we think of it as channels and connections of these channels. This allows for drastic simplification in the logic, because we have always a separate of concerns between communication and application.
 
